@@ -38,10 +38,6 @@ jobs:
     - name: Push to release
       id: push_release
       run: |
-        git config --global user.name github-actions
-        git config --global user.email github-actions@example.com
-        git add -u
-        git commit -m "[version] update" -m "Created by: ${{ github.event.sender.login }}" -m ":ci skip all"
         git push origin --force ${{ github.event.ref }}:release
         echo ::set-output name=head_sha::$(git rev-parse HEAD)
     - name: Update master
