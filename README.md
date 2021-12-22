@@ -15,6 +15,9 @@
 [![Downloads](https://img.shields.io/github/downloads/yt-dlp/yt-dlp/total?style=for-the-badge&color=blue)](https://github.com/yt-dlp/yt-dlp/releases/latest)
 [![PyPi Downloads](https://img.shields.io/pypi/dm/yt-dlp?label=PyPi&style=for-the-badge)](https://pypi.org/project/yt-dlp)
 
+**This repository is for unofficial daily builds.**
+**Please do not open any issues nor pull requests.**
+
 </div>
 <!-- MANPAGE: END EXCLUDED SECTION -->
 
