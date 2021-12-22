@@ -1,5 +1,9 @@
 name: Build
-on: workflow_dispatch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
 
 jobs:
   build_unix:
@@ -25,10 +29,7 @@ jobs:
       run: sudo apt-get -y install zip pandoc man
     - name: Set version suffix
       id: version_suffix
-      env:
-        PUSH_VERSION_COMMIT: ${{ secrets.PUSH_VERSION_COMMIT }}
-      if: "env.PUSH_VERSION_COMMIT == ''"
-      run: echo ::set-output name=version_suffix::$(date -u +"%H%M%S")
+      run: echo ::set-output name=version_suffix::$( printf '114514\n40298\n43044\n810\n1919\n19419\n334' | sort -R | head -n1 )
     - name: Bump version
       id: bump_version
       run: |
@@ -36,13 +37,7 @@ jobs:
         make issuetemplates
     - name: Push to release
       id: push_release
-      run: |
-        git config --global user.name github-actions
-        git config --global user.email github-actions@example.com
-        git add -u
-        git commit -m "[version] update" -m "Created by: ${{ github.event.sender.login }}" -m ":ci skip all"
-        git push origin --force ${{ github.event.ref }}:release
-        echo ::set-output name=head_sha::$(git rev-parse HEAD)
+      run: echo ::set-output name=head_sha::$(git rev-parse HEAD)
     - name: Update master
       id: push_master
       env:
@@ -167,7 +162,7 @@ jobs:
           /usr/bin/python3 -m pip install -U --user pip Pyinstaller==4.9 -r requirements.txt
     - name: Bump version
       id: bump_version
-      run: /usr/bin/python3 devscripts/update-version.py
+      run: /usr/bin/python3 devscripts/update-version.py ${{ needs.build_unix.outputs.version_suffix }}
     - name: Build lazy extractors
       id: lazy_extractors
       run: /usr/bin/python3 devscripts/make_lazy_extractors.py
@@ -212,7 +207,7 @@ jobs:
       run: echo "::set-output name=sha512_macos_zip::$(sha512sum dist/yt-dlp_macos.zip | awk '{print $1}')"
 
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: build_unix
     outputs:
       sha256_win: ${{ steps.sha256_win.outputs.sha256_win }}
@@ -236,9 +231,7 @@ jobs:
           pip install "https://yt-dlp.github.io/Pyinstaller-Builds/x86_64/pyinstaller-4.9-py3-none-any.whl" -r requirements.txt
     - name: Bump version
       id: bump_version
-      env:
-        version_suffix: ${{ needs.build_unix.outputs.version_suffix }}
-      run: python devscripts/update-version.py ${{ env.version_suffix }}
+      run: python devscripts/update-version.py ${{ needs.build_unix.outputs.version_suffix }}
     - name: Build lazy extractors
       id: lazy_extractors
       run: python devscripts/make_lazy_extractors.py
@@ -302,7 +295,7 @@ jobs:
       run: echo "::set-output name=sha512_py2exe::$((Get-FileHash dist\yt-dlp.exe -Algorithm SHA512).Hash.ToLower())"
 
   build_windows32:
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: build_unix
 
     outputs:
@@ -323,9 +316,7 @@ jobs:
           pip install "https://yt-dlp.github.io/Pyinstaller-Builds/i686/pyinstaller-4.9-py3-none-any.whl" -r requirements.txt
     - name: Bump version
       id: bump_version
-      env:
-        version_suffix: ${{ needs.build_unix.outputs.version_suffix }}
-      run: python devscripts/update-version.py ${{ env.version_suffix }}
+      run: python devscripts/update-version.py ${{ needs.build_unix.outputs.version_suffix }}
     - name: Build lazy extractors
       id: lazy_extractors
       run: python devscripts/make_lazy_extractors.py
