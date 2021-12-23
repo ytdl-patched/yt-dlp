@@ -874,7 +874,7 @@ class YoutubeDL(object):
             text = text.encode(encoding, 'ignore').decode(encoding)
             if fallback is not None and text != original_text:
                 text = fallback
-        if isinstance(f, self.Styles):
+        if isinstance(f, Enum):
             f = f.value
         return format_text(text, f) if allow_colors else text if fallback is None else fallback
 

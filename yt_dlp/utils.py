@@ -13,6 +13,7 @@ import ctypes
 import datetime
 import email.utils
 import email.header
+from enum import Enum
 import errno
 import functools
 import gzip
@@ -5090,3 +5091,44 @@ def join_nonempty(*values, delim='-', from_dict=None):
     if from_dict is not None:
         values = map(from_dict.get, values)
     return delim.join(map(str, filter(None, values)))
+
+
+def format_markdown(formatter, text, *, preserve_links=False):
+    # TODO: Decide styles
+    class Styles(Enum):
+        CODE = 'green'
+        BOLD = 'bold white'
+        ITALIC = 'yellow'
+        UNDERLINE = 'underlined white'
+        STRIKE = 'bold black'
+        LINK_TEXT = 'cyan'
+        LINK = 'blue'
+        HEADER1 = 'bold red'
+        HEADER2 = 'bold green'
+        HEADER3 = 'bold cyan'
+        HEADER4 = 'bold yellow'
+
+    REPLACERS = {
+        r'`([^`]*)`': ('{0}', Styles.CODE),
+        r'~~((?:[^~\n]|\\~)*)~~': ('{0}', Styles.STRIKE),
+        r'__((?:[^_\n]|\\_)*)__': ('{0}', Styles.UNDERLINE),
+        r'\*\*((?:[^*\n]|\\\*)*)\*\*': ('{0}', Styles.BOLD),  # Must be before italic
+        r'\*((?:[^*\n]|\\\*)*)\*': ('{0}', Styles.ITALIC),
+        r'\[([^\[\n]+)\]\((.*)\)': (
+            ('{0}', Styles.LINK_TEXT) if not preserve_links
+            else ('{0} ({1})', Styles.LINK_TEXT, Styles.LINK)),
+        r'^# (.+)$': ('{0}', Styles.HEADER1),
+        r'^## (.+)$': ('{0}', Styles.HEADER2),
+        r'^### (.+)$': ('{0}', Styles.HEADER3),
+        r'^#### (.+)$': ('{0}', Styles.HEADER4),
+    }
+
+    def sub_func(f, *styles):
+        def func(mobj):
+            return f.format(*(
+                formatter(g, s) for g, s in zip(mobj.groups(), styles)))
+        return func
+
+    for regex, replace in REPLACERS.items():
+        text = re.sub(regex, sub_func(*replace), text, flags=re.MULTILINE)
+    return text

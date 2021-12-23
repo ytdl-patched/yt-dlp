@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import hashlib
 import json
 import os
+import re
 import platform
 import subprocess
 import sys
@@ -10,7 +11,13 @@ import traceback
 from zipimport import zipimporter
 
 from .compat import compat_realpath
-from .utils import encode_compat_str, Popen, write_string
+from .utils import (
+    encode_compat_str,
+    format_markdown,
+    Popen,
+    write_string,
+    version_tuple,
+)
 
 from .version import __version__
 
@@ -62,13 +69,32 @@ def is_non_updateable():
     return _NON_UPDATEABLE_REASONS.get(detect_variant(), _NON_UPDATEABLE_REASONS['unknown'])
 
 
+def calc_sha256sum(path):
+    h = hashlib.sha256()
+    b = bytearray(128 * 1024)
+    mv = memoryview(b)
+    with open(os.path.realpath(path), 'rb', buffering=0) as f:
+        for n in iter(lambda: f.readinto(mv), 0):
+            h.update(mv[:n])
+    return h.hexdigest()
+
+
+def newer_releases(releases, version):
+    for release in releases:
+        if release.get('draft') and release.get('prerelease'):
+            continue
+        if version_tuple(version) >= version_tuple(release['tag_name']):
+            break
+        yield release
+
+
 def run_update(ydl):
     """
     Update the program file with the latest version from the repository
     Returns whether the program should terminate
     """
 
-    JSON_URL = 'https://api.github.com/repos/ytdl-patched/yt-dlp/releases/latest'
+    JSON_URL = 'https://api.github.com/repos/ytdl-patched/yt-dlp/releases'
 
     def report_error(msg, expected=False):
         ydl.report_error(msg, tb='' if expected else None)
@@ -82,30 +108,34 @@ def run_update(ydl):
     def report_network_error(action, delim=';'):
         report_unable(f'{action}{delim} Visit  https://github.com/yt-dlp/yt-dlp/releases/latest', True)
 
-    def calc_sha256sum(path):
-        h = hashlib.sha256()
-        b = bytearray(128 * 1024)
-        mv = memoryview(b)
-        with open(os.path.realpath(path), 'rb', buffering=0) as f:
-            for n in iter(lambda: f.readinto(mv), 0):
-                h.update(mv[:n])
-        return h.hexdigest()
-
     # Download and check versions info
     try:
-        version_info = ydl._opener.open(JSON_URL).read().decode('utf-8')
-        version_info = json.loads(version_info)
+        releases = json.loads(ydl._opener.open(JSON_URL).read().decode('utf-8'))
     except Exception:
         return report_network_error('obtain version info', delim='; Please try again later or')
 
-    def version_tuple(version_str):
-        return tuple(map(int, version_str.split('.')))
-
-    version_id = version_info['tag_name']
+    version_id = next(newer_releases(releases, '0'))['tag_name']
     ydl.to_screen(f'Latest version: {version_id}, Current version: {__version__}')
     if version_tuple(__version__) >= version_tuple(version_id):
         ydl.to_screen(f'yt-dlp is up to date ({__version__})')
         return
+
+    def sanitize_changelog(changelog):
+        changelog = changelog.replace('\r', '')
+        changelog = re.sub(r'(?s)^.+?\n### Changelog:\n', '', changelog)  # header
+        return changelog
+
+    try:
+        ydl.to_screen(format_markdown(
+            ydl._format_screen,
+            '# CHANGELOG:\n%s\n' % '\n\n'.join(
+                '## %s\n%s' % (release['tag_name'], sanitize_changelog(release['body']))
+                for release in list(newer_releases(releases, __version__))[::-1])))
+    except Exception as e:  # Any error in this code must not cause update to fail
+        ydl.report_error(
+            f'There was an error in printing the changelog - {e}. '
+            'Visit  https://github.com/yt-dlp/yt-dlp/blob/release/Changelog.md  '
+            f'{bug_reports_message(".")}', is_error=False)
 
     err = is_non_updateable()
     if err:
