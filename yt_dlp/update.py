@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import hashlib
 import json
 import os
-import re
 import platform
+import re
 import subprocess
 import sys
 import traceback
@@ -12,11 +12,12 @@ from zipimport import zipimporter
 
 from .compat import compat_realpath
 from .utils import (
+    bug_reports_message,
     encode_compat_str,
     format_markdown,
     Popen,
-    write_string,
     version_tuple,
+    write_string,
 )
 
 from .version import __version__
