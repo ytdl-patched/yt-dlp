@@ -14,6 +14,9 @@
 [![Commits](https://img.shields.io/github/commit-activity/m/yt-dlp/yt-dlp?label=commits&style=for-the-badge)](https://github.com/yt-dlp/yt-dlp/commits "Commit History")
 [![Last Commit](https://img.shields.io/github/last-commit/yt-dlp/yt-dlp/master?label=&style=for-the-badge)](https://github.com/yt-dlp/yt-dlp/commits "Commit History")
 
+**This repository is for unofficial daily builds.**
+**Please do not open any issues nor pull requests.**
+
 </div>
 <!-- MANPAGE: END EXCLUDED SECTION -->
 
