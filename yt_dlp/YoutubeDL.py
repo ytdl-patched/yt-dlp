@@ -3768,6 +3768,8 @@ class YoutubeDL:
         if not _IN_CLI:
             write_debug(f'params: {self.params}')
 
+        write_debug('** This build is unofficial daily builds, provided for ease of use.')
+        write_debug('** Please do not ask for any support.')
         if not _LAZY_LOADER:
             if os.environ.get('YTDLP_NO_LAZY_EXTRACTORS'):
                 write_debug('Lazy loading extractors is forcibly disabled')
