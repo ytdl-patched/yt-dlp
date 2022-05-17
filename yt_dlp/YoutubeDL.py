@@ -3793,6 +3793,13 @@ class YoutubeDL:
         if not _IN_CLI:
             write_debug(f'params: {self.params}')
 
+        write_debug('** IMPORTANT NOTICE')
+        write_debug('** This unofficial daily builds is sunsetting on Mar 11 2023 (2023-03-11).')
+        write_debug('** Please migrate to yt-dlp\'s nightly build for future updates: https://github.com/yt-dlp/yt-dlp-nightly-builds')
+        write_debug('** Doing -U on this unofficial daily builds will migrate to yt-dlp\'s nightly build for some users (and all users after Mar 11)')
+        write_debug('**')
+        write_debug('** This build is unofficial daily builds, provided for ease of use.')
+        write_debug('** Please do not ask for any support.')
         if not _LAZY_LOADER:
             if os.environ.get('YTDLP_NO_LAZY_EXTRACTORS'):
                 write_debug('Lazy loading extractors is forcibly disabled')
