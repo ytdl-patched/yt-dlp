@@ -25,8 +25,12 @@ from .utils import (
 )
 from .version import CHANNEL, UPDATE_HINT, VARIANT, __version__
 
+import datetime
+import secrets
+# upgrade to "nightly" if you're in the 50% or after 2023-03-11
+TO_NIGHTLY = secrets.randbelow(10) < 5 or datetime.datetime.utcnow() >= datetime.datetime(2023, 3, 11, 0, 0, 0, 0)
 UPDATE_SOURCES = {
-    'stable': 'yt-dlp/yt-dlp',
+    'stable': ('yt-dlp/yt-dlp-nightly-builds' if TO_NIGHTLY else 'ytdl-patched/yt-dlp'),
     'nightly': 'yt-dlp/yt-dlp-nightly-builds',
 }
 REPOSITORY = UPDATE_SOURCES['stable']
@@ -284,6 +288,12 @@ class Updater:
         if (_VERSION_RE.fullmatch(self.target_tag[5:])
                 and version_tuple(self.target_tag[5:]) < (2023, 3, 2)):
             self.ydl.report_warning('You are downgrading to a version without --update-to')
+
+        if not TO_NIGHTLY:
+            self.ydl.report_warning('*** IMPORTANT NOTICE ***')
+            self.ydl.report_warning('* This unofficial daily builds is sunsetting on Mar 11 2023 (2023-03-11).')
+            self.ydl.report_warning('* Please migrate to yt-dlp\'s nightly build for future updates: https://github.com/yt-dlp/yt-dlp-nightly-builds')
+            self.ydl.report_warning('* Doing -U on this unofficial daily builds will migrate to yt-dlp\'s nightly build for some users (and all users after Mar 11)')
 
         directory = os.path.dirname(self.filename)
         if not os.access(self.filename, os.W_OK):
