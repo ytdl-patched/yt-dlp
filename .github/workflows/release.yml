@@ -1,5 +1,8 @@
 name: Release
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
 permissions:
   contents: read
 
@@ -24,7 +27,7 @@ jobs:
       - name: Update version
         id: update_version
         run: |
-          python devscripts/update-version.py ${{ vars.PUSH_VERSION_COMMIT == '' && '"$(date -u +"%H%M%S")"' || '' }} | \
+          python devscripts/update-version.py | \
             grep -Po "version=\d+\.\d+\.\d+(\.\d+)?" >> "$GITHUB_OUTPUT"
 
       - name: Update documentation

@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import argparse
 import contextlib
 import sys
+import random
 from datetime import datetime
 
 from devscripts.utils import read_version, run_process, write_file
@@ -22,9 +23,7 @@ def get_new_version(version, revision):
     if revision:
         assert revision.isdigit(), 'Revision must be a number'
     else:
-        old_version = read_version().split('.')
-        if version.split('.') == old_version[:3]:
-            revision = str(int((old_version + [0])[3]) + 1)
+        revision = random.choice(['334', '114514', '810', '1234', '19419'])
 
     return f'{version}.{revision}' if revision else version
 

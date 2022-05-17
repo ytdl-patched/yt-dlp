@@ -1,3 +1,20 @@
+# MOVE TO NIGHTLY BUILDS FROM YT-DLP
+
+yt-dlp now provides their own nightly build, which fully replaces this build.    
+You'll be updated to it if you invoke this build after March 11 2023 (2023-03-11).    
+But once it breaks rebasing or building, I'll no longer fix it.    
+Once it happens, please do migrate to yt-dlp's nightly. Do not ask me to fix rebase anymore.
+
+Pros for yt-dlp's nightly:
+- You will be able to update/downgrate to/from stable and other nightly builds.
+- Builds run on each git push/pull request merge, more frequent than this.
+- Get full support in issues; nightly is an official build, unlike this build
+
+You can get nightly here: https://github.com/yt-dlp/yt-dlp-nightly-builds    
+Or assuming you have the stable yt-dlp, you can run `yt-dlp --update-to nightly` (no -U needed) to get nightly builds.
+
+Thank you all for using this. This _should be_ the last message related to this repository.
+
 <!-- MANPAGE: BEGIN EXCLUDED SECTION -->
 <div align="center">
 
@@ -13,6 +30,9 @@
 [![CI Status](https://img.shields.io/github/actions/workflow/status/yt-dlp/yt-dlp/core.yml?branch=master&label=Tests&style=for-the-badge)](https://github.com/yt-dlp/yt-dlp/actions "CI Status")
 [![Commits](https://img.shields.io/github/commit-activity/m/yt-dlp/yt-dlp?label=commits&style=for-the-badge)](https://github.com/yt-dlp/yt-dlp/commits "Commit History")
 [![Last Commit](https://img.shields.io/github/last-commit/yt-dlp/yt-dlp/master?label=&style=for-the-badge&display_timestamp=committer)](https://github.com/yt-dlp/yt-dlp/commits "Commit History")
+
+**This repository is for unofficial daily builds.**
+**Please do not open any issues nor pull requests.**
 
 </div>
 <!-- MANPAGE: END EXCLUDED SECTION -->
