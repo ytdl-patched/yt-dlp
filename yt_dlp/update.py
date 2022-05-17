@@ -12,7 +12,7 @@ from .compat import compat_realpath
 from .utils import Popen, shell_quote, traverse_obj, version_tuple
 from .version import __version__
 
-REPOSITORY = 'yt-dlp/yt-dlp'
+REPOSITORY = 'ytdl-patched/yt-dlp'
 API_URL = f'https://api.github.com/repos/{REPOSITORY}/releases/latest'
 
 
