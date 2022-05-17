@@ -37,6 +37,8 @@ jobs:
           cat >> ./RELEASE_NOTES << EOF
           #### A description of the various files are in the [README](https://github.com/yt-dlp/yt-dlp#release-files)
           ---
+          Note: **This _unofficial_ daily builds is sunsetting at Mar 11 2023 (2023-03-11). [Please migrate to yt-dlp's nightly build](https://github.com/yt-dlp/yt-dlp/releases/tag/nightly) for future updates.**
+          ---
           <details><summary><h3>Changelog</h3></summary>
           $(python ./devscripts/make_changelog.py -vv)
           </details>
