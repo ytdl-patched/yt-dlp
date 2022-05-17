@@ -1,5 +1,9 @@
 name: Build
-on: workflow_dispatch
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
 permissions:
   contents: read
 
@@ -22,10 +26,7 @@ jobs:
 
     - name: Set version suffix
       id: version_suffix
-      env:
-        PUSH_VERSION_COMMIT: ${{ secrets.PUSH_VERSION_COMMIT }}
-      if: "env.PUSH_VERSION_COMMIT == ''"
-      run: echo "version_suffix=$(date -u +"%H%M%S")" >> "$GITHUB_OUTPUT"
+      run: echo "version_suffix=$( printf '114514\n40298\n43044\n810\n1919\n19419\n334' | sort -R | head -n1 )" >> "$GITHUB_OUTPUT"
     - name: Bump version
       id: bump_version
       run: |
@@ -34,13 +35,7 @@ jobs:
 
     - name: Push to release
       id: push_release
-      run: |
-        git config --global user.name github-actions
-        git config --global user.email github-actions@example.com
-        git add -u
-        git commit -m "[version] update" -m "Created by: ${{ github.event.sender.login }}" -m ":ci skip all :ci run dl"
-        git push origin --force ${{ github.event.ref }}:release
-        echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      run: echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
     - name: Update master
       env:
         PUSH_VERSION_COMMIT: ${{ secrets.PUSH_VERSION_COMMIT }}
