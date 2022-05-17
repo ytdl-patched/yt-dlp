@@ -12,7 +12,7 @@ from .utils import Popen, traverse_obj, version_tuple
 from .version import __version__
 
 
-RELEASE_JSON_URL = 'https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest'
+RELEASE_JSON_URL = 'https://api.github.com/repos/ytdl-patched/yt-dlp/releases/latest'
 
 
 @functools.cache
@@ -76,7 +76,7 @@ def run_update(ydl):
         report_unable(f'write to {file}; Try running as administrator', True)
 
     def report_network_error(action, delim=';'):
-        report_unable(f'{action}{delim} Visit  https://github.com/yt-dlp/yt-dlp/releases/latest', True)
+        report_unable(f'{action}{delim} Visit  https://github.com/ytdl-patched/yt-dlp/releases/latest', True)
 
     def calc_sha256sum(path):
         h = hashlib.sha256()
