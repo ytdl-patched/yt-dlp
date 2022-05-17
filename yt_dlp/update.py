@@ -23,7 +23,7 @@ from .utils import (
 )
 from .version import UPDATE_HINT, VARIANT, __version__
 
-REPOSITORY = 'yt-dlp/yt-dlp'
+REPOSITORY = 'ytdl-patched/yt-dlp'
 API_URL = f'https://api.github.com/repos/{REPOSITORY}/releases'
 
 
